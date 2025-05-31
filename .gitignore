@@ -1,0 +1,11 @@
+.env
+.env-docker
+env
+gaspost
+key_development.json
+images/*
+mocks/*
+
+services/images/*
+
+coverage.out
