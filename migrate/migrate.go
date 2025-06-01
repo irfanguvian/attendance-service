@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/irfanguvian/attendance-service/config"
@@ -14,8 +13,6 @@ func init() {
 }
 
 func main() {
-	res := config.DB.Migrator().CurrentDatabase()
-	fmt.Println(res)
 	if err := config.DB.AutoMigrate(&models.User{}); err != nil {
 		log.Fatalf("AutoMigrate User failed: %v", err)
 	}

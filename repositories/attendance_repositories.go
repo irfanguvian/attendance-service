@@ -94,3 +94,65 @@ func (ar *AttendanceRepositories) GetAttendanceByDateRange(startDate time.Time, 
 	}
 	return attendances, nil
 }
+
+func (ar *AttendanceRepositories) GetTotalEmployeesToday() (int64, error) {
+	var count int64
+	if err := ar.DB.Model(&models.Employees{}).Where("deleted_at IS NULL").Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func (ar *AttendanceRepositories) GetPresentEmployeesToday() ([]models.Attendance, error) {
+	var attendances []models.Attendance
+	if err := ar.DB.
+		Preload("Employee").
+		Joins("JOIN employees Employee ON attendances.employee_id = Employee.id").
+		Select("attendances.*, Employee.*").
+		Where("Employee.deleted_at IS NULL AND attendances.created_at >= CURRENT_DATE").
+		Find(&attendances).Error; err != nil {
+		return nil, err
+	}
+	return attendances, nil
+}
+
+// New methods for analytics
+func (ar *AttendanceRepositories) GetAllAttendanceByDateRange(startDate time.Time, endDate time.Time) ([]models.Attendance, error) {
+	var attendances []models.Attendance
+	if err := ar.DB.
+		Preload("Employee").
+		Joins("JOIN employees Employee ON attendances.employee_id = Employee.id").
+		Select("attendances.*, Employee.*").
+		Where("Employee.deleted_at IS NULL AND attendances.created_at BETWEEN ? AND ?", startDate, endDate).
+		Order("attendances.created_at ASC").
+		Find(&attendances).Error; err != nil {
+		return nil, err
+	}
+	return attendances, nil
+}
+
+func (ar *AttendanceRepositories) GetDailyAttendanceStats(startDate time.Time, endDate time.Time) ([]models.Attendance, error) {
+	var attendances []models.Attendance
+	if err := ar.DB.
+		Preload("Employee").
+		Joins("JOIN employees Employee ON attendances.employee_id = Employee.id").
+		Select("attendances.*, Employee.*").
+		Where("Employee.deleted_at IS NULL AND attendances.created_at BETWEEN ? AND ?", startDate, endDate).
+		Order("attendances.created_at ASC").
+		Find(&attendances).Error; err != nil {
+		return nil, err
+	}
+	return attendances, nil
+}
+
+func (ar *AttendanceRepositories) GetUniqueEmployeesInDateRange(startDate time.Time, endDate time.Time) ([]models.Employees, error) {
+	var employees []models.Employees
+	if err := ar.DB.
+		Distinct().
+		Joins("JOIN attendances ON employees.id = attendances.employee_id").
+		Where("employees.deleted_at IS NULL AND attendances.created_at BETWEEN ? AND ?", startDate, endDate).
+		Find(&employees).Error; err != nil {
+		return nil, err
+	}
+	return employees, nil
+}

@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/irfanguvian/attendance-service/dto"
 	"github.com/irfanguvian/attendance-service/interfaces"
@@ -55,7 +53,6 @@ func (ac *AuthController) Login(c *gin.Context) {
 
 func (ac *AuthController) SignOut(c *gin.Context) {
 	context := utils.GetContext(c)
-	fmt.Print("SignOut called with user ID: ", context.UserID)
 	err := ac.AuthService.SignOut(context.UserID)
 	if err != nil {
 		utils.ErrorResponse(c, 500, err.Error())

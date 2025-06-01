@@ -25,5 +25,11 @@ func SetupRoutes(router *gin.Engine, controllers *controllers.Controllers, middl
 	attendanceRoutes.GET("/list-today", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.GetAttendanceList)
 	attendanceRoutes.GET("/list-by-date-range", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.GetAttendanceListByDateRange)
 	attendanceRoutes.GET("/salaries", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.ListEmployeeSalaries)
+	attendanceRoutes.GET("/summary-today", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.GetTodayAttendanceSummary)
+
+	// Analytics routes
+	attendanceRoutes.GET("/analytics/comprehensive", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.GetComprehensiveAnalytics)
+	attendanceRoutes.GET("/analytics/daily-trends", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.GetDailyTrendAnalytics)
+	attendanceRoutes.GET("/analytics/monthly-trends", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.GetMonthlyTrendAnalytics)
 
 }

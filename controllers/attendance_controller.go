@@ -207,3 +207,116 @@ func (ac *AttendanceController) GetAttendanceListByDateRange(c *gin.Context) {
 	}
 	utils.SuccessResponse(c, 200, "Attendance list retrieved successfully", attendances)
 }
+
+func (ac *AttendanceController) GetTodayAttendanceSummary(c *gin.Context) {
+	summary, err := ac.AttendanceService.GetTodayAttendanceSummary()
+	if err != nil {
+		utils.ErrorResponse(c, 500, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(c, 200, "Today's attendance summary retrieved successfully", summary)
+}
+
+// GetComprehensiveAnalytics provides comprehensive attendance analytics
+func (ac *AttendanceController) GetComprehensiveAnalytics(c *gin.Context) {
+	startDateStr := c.Query("start_date")
+	endDateStr := c.Query("end_date")
+	groupBy := c.DefaultQuery("group_by", "comprehensive")
+
+	if startDateStr == "" || endDateStr == "" {
+		utils.ErrorResponse(c, 400, "Both start_date and end_date are required (format: YYYY-MM-DD)")
+		return
+	}
+
+	startDate, err := time.Parse("2006-01-02", startDateStr)
+	if err != nil {
+		utils.ErrorResponse(c, 400, "Invalid start_date format. Use YYYY-MM-DD")
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", endDateStr)
+	if err != nil {
+		utils.ErrorResponse(c, 400, "Invalid end_date format. Use YYYY-MM-DD")
+		return
+	}
+
+	// Ensure end date is end of day
+	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 0, endDate.Location())
+
+	analytics, err := ac.AttendanceService.GetComprehensiveAnalytics(startDate, endDate, groupBy)
+	if err != nil {
+		utils.ErrorResponse(c, 500, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(c, 200, "Comprehensive analytics retrieved successfully", analytics)
+}
+
+// GetDailyTrendAnalytics provides daily attendance trends
+func (ac *AttendanceController) GetDailyTrendAnalytics(c *gin.Context) {
+	startDateStr := c.Query("start_date")
+	endDateStr := c.Query("end_date")
+
+	if startDateStr == "" || endDateStr == "" {
+		utils.ErrorResponse(c, 400, "Both start_date and end_date are required (format: YYYY-MM-DD)")
+		return
+	}
+
+	startDate, err := time.Parse("2006-01-02", startDateStr)
+	if err != nil {
+		utils.ErrorResponse(c, 400, "Invalid start_date format. Use YYYY-MM-DD")
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", endDateStr)
+	if err != nil {
+		utils.ErrorResponse(c, 400, "Invalid end_date format. Use YYYY-MM-DD")
+		return
+	}
+
+	// Ensure end date is end of day
+	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 0, endDate.Location())
+
+	dailyTrends, err := ac.AttendanceService.GetDailyTrendAnalytics(startDate, endDate)
+	if err != nil {
+		utils.ErrorResponse(c, 500, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(c, 200, "Daily trends retrieved successfully", dailyTrends)
+}
+
+// GetMonthlyTrendAnalytics provides monthly attendance and salary trends
+func (ac *AttendanceController) GetMonthlyTrendAnalytics(c *gin.Context) {
+	startDateStr := c.Query("start_date")
+	endDateStr := c.Query("end_date")
+
+	if startDateStr == "" || endDateStr == "" {
+		utils.ErrorResponse(c, 400, "Both start_date and end_date are required (format: YYYY-MM-DD)")
+		return
+	}
+
+	startDate, err := time.Parse("2006-01-02", startDateStr)
+	if err != nil {
+		utils.ErrorResponse(c, 400, "Invalid start_date format. Use YYYY-MM-DD")
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", endDateStr)
+	if err != nil {
+		utils.ErrorResponse(c, 400, "Invalid end_date format. Use YYYY-MM-DD")
+		return
+	}
+
+	// Ensure end date is end of day
+	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 0, endDate.Location())
+
+	monthlyTrends, err := ac.AttendanceService.GetMonthlyTrendAnalytics(startDate, endDate)
+	if err != nil {
+		utils.ErrorResponse(c, 500, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(c, 200, "Monthly trends retrieved successfully", monthlyTrends)
+}

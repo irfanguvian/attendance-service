@@ -1,8 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/irfanguvian/attendance-service/interfaces"
 	"github.com/irfanguvian/attendance-service/utils"
@@ -54,7 +52,6 @@ func (up *AuthMiddleware) ProtecHandlerRequest(context *gin.Context) {
 		context.Abort()
 		return
 	}
-	fmt.Println("SAMPE SINI")
 	context.Set("email", getUser.Email)
 	context.Set("user_id", getUser.ID)
 	context.Next()

@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
@@ -70,7 +69,6 @@ func (as *AuthService) Signup(signupBody dto.SignupBody) (string, error) {
 }
 
 func (as *AuthService) Login(loginBody dto.LoginBody) (*dto.ResponseLoginService, error) {
-	fmt.Println("Login attempt with email:", loginBody.Email)
 	getUser, err := as.Repositories.UserRepository.GetUserByEmail(loginBody.Email)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {

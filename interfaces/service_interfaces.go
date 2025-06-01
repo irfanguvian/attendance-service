@@ -39,6 +39,11 @@ type AttendanceService interface {
 	CreateAttendance(attendance dto.CreateAttendanceBody) error
 	GetAttendanceList(body dto.Pagination) (dto.ResponseGetAllAttendance, error)
 	GetSalariesEmployeeByDate(startDate time.Time, endDate time.Time, body dto.Pagination) (dto.ResponseGetMetricSalariesByDate, error)
-	
 	GetAttendanceListByDateRange(startDate time.Time, endDate time.Time, body dto.Pagination) (dto.ResponseGetAllAttendance, error)
+	GetTodayAttendanceSummary() (dto.TodayAttendanceSummary, error)
+
+	// New analytics methods
+	GetComprehensiveAnalytics(startDate time.Time, endDate time.Time, groupBy string) (dto.ComprehensiveAttendanceAnalytics, error)
+	GetDailyTrendAnalytics(startDate time.Time, endDate time.Time) ([]dto.DailyAttendanceMetrics, error)
+	GetMonthlyTrendAnalytics(startDate time.Time, endDate time.Time) ([]dto.MonthlyAttendanceMetrics, error)
 }

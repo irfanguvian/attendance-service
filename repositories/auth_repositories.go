@@ -1,8 +1,6 @@
 package repositories
 
 import (
-	"fmt"
-
 	"github.com/irfanguvian/attendance-service/models"
 	"gorm.io/gorm"
 )
@@ -25,7 +23,6 @@ func (ar *AuthRepositories) CreateUser(email, password string) (uint, error) {
 	if err := ar.DB.Create(user).Error; err != nil {
 		return 0, err
 	}
-	fmt.Print(user.ID)
 	return user.ID, nil
 }
 

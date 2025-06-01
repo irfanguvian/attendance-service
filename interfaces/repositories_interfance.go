@@ -45,4 +45,11 @@ type AttendanceRepository interface {
 	GetTotalAttendanceToday() (int64, error)
 	IsUserAttendToday(employeeID uint) (bool, error)
 	GetAttendanceByDateRange(startDate time.Time, endDate time.Time, page int8, limit int8) ([]models.Attendance, error)
+	GetTotalEmployeesToday() (int64, error)
+	GetPresentEmployeesToday() ([]models.Attendance, error)
+
+	// New methods for analytics
+	GetAllAttendanceByDateRange(startDate time.Time, endDate time.Time) ([]models.Attendance, error)
+	GetDailyAttendanceStats(startDate time.Time, endDate time.Time) ([]models.Attendance, error)
+	GetUniqueEmployeesInDateRange(startDate time.Time, endDate time.Time) ([]models.Employees, error)
 }

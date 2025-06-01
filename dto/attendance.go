@@ -67,3 +67,64 @@ type AttendanceListWithDateRange struct {
 	Pagination
 	DateRangeRequest
 }
+
+// DTO for today's attendance summary
+type TodayAttendanceSummary struct {
+	Date           string  `json:"date"`
+	TotalEmployees int64   `json:"total_employees"`
+	PresentCount   int64   `json:"present_count"`
+	AbsentCount    int64   `json:"absent_count"`
+	AttendanceRate float64 `json:"attendance_rate"`
+	AbsenceRate    float64 `json:"absence_rate"`
+}
+
+// Enhanced DTOs for comprehensive analytics
+type DailyAttendanceMetrics struct {
+	Date              string  `json:"date"`
+	TotalEmployees    int64   `json:"total_employees"`
+	PresentCount      int64   `json:"present_count"`
+	AbsentCount       int64   `json:"absent_count"`
+	AttendanceRate    float64 `json:"attendance_rate"`    // (Present / Total) * 100
+	ProductivityScore float64 `json:"productivity_score"` // Custom score based on attendance patterns
+}
+
+type MonthlyAttendanceMetrics struct {
+	Month                string  `json:"month"` // Format: "2024-01"
+	Year                 int     `json:"year"`
+	TotalWorkingDays     int     `json:"total_working_days"` // Working days in the month
+	TotalSalaryDisbursed float32 `json:"total_salary_disbursed"`
+	AvgAttendanceRate    float64 `json:"avg_attendance_rate"`
+	TotalEmployees       int64   `json:"total_employees"`
+	MostPresentEmployee  string  `json:"most_present_employee"`
+	LeastPresentEmployee string  `json:"least_present_employee"`
+}
+
+type EmployeeAttendanceInsight struct {
+	EmpID               string  `json:"emp_id"`
+	Fullname            string  `json:"fullname"`
+	TotalPresent        int64   `json:"total_present"`
+	TotalAbsent         int64   `json:"total_absent"`
+	TotalLate           int64   `json:"total_late"`
+	AttendanceRate      float64 `json:"attendance_rate"`
+	OnTimeRate          float64 `json:"on_time_rate"`
+	TotalSalary         float32 `json:"total_salary"`
+	PerformanceCategory string  `json:"performance_category"` // "Excellent", "Good", "Average", "Poor"
+}
+
+type AttendanceAnalyticsRequest struct {
+	StartDate string `json:"start_date" form:"start_date" binding:"required"`
+	EndDate   string `json:"end_date" form:"end_date" binding:"required"`
+	GroupBy   string `json:"group_by" form:"group_by"` // "daily", "monthly", "employee"
+}
+
+type ComprehensiveAttendanceAnalytics struct {
+	DateRange            string                      `json:"date_range"`
+	Summary              AttendanceSummaryResponse   `json:"summary"`
+	DailyMetrics         []DailyAttendanceMetrics    `json:"daily_metrics,omitempty"`
+	MonthlyMetrics       []MonthlyAttendanceMetrics  `json:"monthly_metrics,omitempty"`
+	EmployeeInsights     []EmployeeAttendanceInsight `json:"employee_insights,omitempty"`
+	TopPerformers        []EmployeeAttendanceInsight `json:"top_performers,omitempty"`     // Top 5 performers
+	AttentionRequired    []EmployeeAttendanceInsight `json:"attention_required,omitempty"` // Bottom 5 performers
+	TotalSalaryDisbursed float32                     `json:"total_salary_disbursed"`
+	Insights             []string                    `json:"insights"` // AI-like insights about patterns
+}
