@@ -33,7 +33,7 @@ func main() {
 		log.Fatalf("AutoMigrate Employees failed: %v", err)
 	}
 
-	if err := config.DB.AutoMigrate(&models.Attandance{}); err != nil {
+	if err := config.DB.AutoMigrate(&models.Attendance{}); err != nil {
 		log.Fatalf("AutoMigrate Attandance failed: %v", err)
 	}
 

@@ -22,18 +22,24 @@ func init() {
 
 func setupRepositories() interfaces.Repositories {
 	return interfaces.Repositories{
-		UserRepository: repositories.NewAuthRepositories(config.DB),
+		UserRepository:       repositories.NewAuthRepositories(config.DB),
+		EmployeeRepository:   repositories.NewEmployeeRepositories(config.DB),
+		AttendanceRepository: repositories.NewAttendanceRepositories(config.DB),
 	}
 }
 
 func setupServices(repositories interfaces.Repositories) interfaces.Services {
 	return interfaces.Services{
-		AuthService: services.NewAuthService(repositories),
+		AuthService:       services.NewAuthService(repositories),
+		EmployeeService:   services.NewEmployeeService(repositories),
+		AttendanceService: services.NewAttendanceService(repositories),
 	}
 }
 
 func main() {
 	router := gin.Default()
+
+	router.Use(middlewares.CORSMiddleware()) // Add CORS middleware
 
 	// Health check
 	router.GET("/ping", func(c *gin.Context) {
@@ -44,9 +50,13 @@ func main() {
 	services := setupServices(repo)
 
 	authController := controllers.NewAuthController(services.AuthService)
+	employeeController := controllers.NewEmployeeController(services.EmployeeService)
+	attendanceController := controllers.NewAttendanceController(services.AttendanceService)
 
 	controllers := &controllers.Controllers{
-		AuthController: authController,
+		AuthController:       authController,
+		EmployeeController:   employeeController,
+		AttendanceController: attendanceController,
 	}
 
 	authMiddleware := middlewares.NewAuthMiddleware(services.AuthService)

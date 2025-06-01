@@ -5,7 +5,9 @@ import (
 )
 
 type Repositories struct {
-	UserRepository UserRepository
+	UserRepository       UserRepository
+	EmployeeRepository   EmployeeRepository
+	AttendanceRepository AttendanceRepository
 }
 
 type UserRepository interface {
@@ -19,4 +21,22 @@ type UserRepository interface {
 	GetRefreshTokenByAccessID(accessID string) (string, error)
 
 	GetUserByAccessID(accessID string) (*models.User, error)
+}
+
+type EmployeeRepository interface {
+	CreateEmployee(employee *models.Employees) error
+	UpdateEmployee(employee *models.Employees) error
+	DeleteEmployee(employeeID uint) error
+	GetEmployeeByID(employeeID uint) (*models.Employees, error)
+	GetAllEmployees(page int8, limit int8) ([]models.Employees, error)
+
+	GetTotalEmployees() (int64, error)
+	GetLatestEmployeeID() (int64, error)
+}
+
+type AttendanceRepository interface {
+	CreateAttendance(attendance *models.Attendance) error
+	GetAttendanceListToday(page int8, limit int8) ([]models.Attendance, error)
+	GetTotalAttendanceToday() (int64, error)
+	IsUserAttendToday(employeeID uint) (bool, error)
 }

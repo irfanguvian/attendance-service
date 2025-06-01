@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
@@ -95,11 +96,13 @@ func (as *AuthService) Login(loginBody dto.LoginBody) (*dto.ResponseLoginService
 
 	claims := jwt.MapClaims{
 		"access_id": accessTokenID,
+		"exp":       jwt.TimeFunc().Add(1 * time.Minute).Unix(), // Set expiration time to 24 hours
 	}
 
 	claimsRefreshToken := jwt.MapClaims{
 		"access_id":  accessTokenID,
 		"refresh_id": refreshTokenID,
+		"exp":        jwt.TimeFunc().Add(10 * time.Hour).Unix(), // Set expiration time to 24 hours
 	}
 
 	token, err := CreateToken(claims)
