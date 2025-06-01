@@ -44,4 +44,5 @@ type AttendanceRepository interface {
 	GetTotalAttendanceByDate(startDate time.Time, endDate time.Time) (int64, error)
 	GetTotalAttendanceToday() (int64, error)
 	IsUserAttendToday(employeeID uint) (bool, error)
+	GetAttendanceByDateRange(startDate time.Time, endDate time.Time, page int8, limit int8) ([]models.Attendance, error)
 }

@@ -39,5 +39,6 @@ type AttendanceService interface {
 	CreateAttendance(attendance dto.CreateAttendanceBody) error
 	GetAttendanceList(body dto.Pagination) (dto.ResponseGetAllAttendance, error)
 	GetSalariesEmployeeByDate(startDate time.Time, endDate time.Time, body dto.Pagination) (dto.ResponseGetMetricSalariesByDate, error)
-
+	
+	GetAttendanceListByDateRange(startDate time.Time, endDate time.Time, body dto.Pagination) (dto.ResponseGetAllAttendance, error)
 }

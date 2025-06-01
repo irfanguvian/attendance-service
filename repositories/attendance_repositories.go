@@ -77,3 +77,20 @@ func (ar *AttendanceRepositories) GetTotalAttendanceByDate(startDate time.Time, 
 	}
 	return count, nil
 }
+
+func (ar *AttendanceRepositories) GetAttendanceByDateRange(startDate time.Time, endDate time.Time, page int8, limit int8) ([]models.Attendance, error) {
+	var attendances []models.Attendance
+	offset := (page - 1) * limit
+	if err := ar.DB.
+		Preload("Employee").
+		Joins("JOIN employees Employee ON attendances.employee_id = Employee.id").
+		Select("attendances.*, Employee.*").
+		Where("Employee.deleted_at is null AND attendances.created_at BETWEEN ? AND ?", startDate, endDate).
+		Order("attendances.created_at DESC").
+		Offset(int(offset)).
+		Limit(int(limit)).
+		Find(&attendances).Error; err != nil {
+		return nil, err
+	}
+	return attendances, nil
+}

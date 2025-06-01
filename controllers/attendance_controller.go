@@ -143,3 +143,67 @@ func (ac *AttendanceController) ListEmployeeSalaries(c *gin.Context) {
 	}
 	utils.SuccessResponse(c, 200, "Employee salaries retrieved successfully", salaries)
 }
+
+func (ac *AttendanceController) GetAttendanceListByDateRange(c *gin.Context) {
+	var pagination dto.AttendanceListWithDateRange
+
+	if _, ok := c.GetQuery("page"); ok {
+		page, err := strconv.Atoi(c.Query("page"))
+		if err != nil {
+			utils.ErrorResponse(c, 400, "Invalid page number")
+			return
+		}
+		pagination.Page = int8(page)
+	}
+
+	if _, ok := c.GetQuery("limit"); ok {
+		limit, err := strconv.Atoi(c.Query("limit"))
+		if err != nil {
+			utils.ErrorResponse(c, 400, "Invalid limit number")
+			return
+		}
+		pagination.Limit = int8(limit)
+	}
+
+	startDateStr := c.Query("start_date")
+	endDateStr := c.Query("end_date")
+
+	if startDateStr == "" || endDateStr == "" {
+		utils.ErrorResponse(c, 400, "Both start_date and end_date are required (format: YYYY-MM-DD)")
+		return
+	}
+
+	startDate, err := time.Parse("2006-01-02", startDateStr)
+	if err != nil {
+		utils.ErrorResponse(c, 400, "Invalid start_date format. Use YYYY-MM-DD")
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", endDateStr)
+	if err != nil {
+		utils.ErrorResponse(c, 400, "Invalid end_date format. Use YYYY-MM-DD")
+		return
+	}
+
+	// Ensure end date is end of day
+	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 0, endDate.Location())
+
+	if pagination.Page <= 0 {
+		pagination.Page = 1
+	}
+	if pagination.Limit <= 0 {
+		pagination.Limit = 10
+	}
+
+	paginationSend := dto.Pagination{
+		Page:  pagination.Page,
+		Limit: pagination.Limit,
+	}
+
+	attendances, err := ac.AttendanceService.GetAttendanceListByDateRange(startDate, endDate, paginationSend)
+	if err != nil {
+		utils.ErrorResponse(c, 500, err.Error())
+		return
+	}
+	utils.SuccessResponse(c, 200, "Attendance list retrieved successfully", attendances)
+}

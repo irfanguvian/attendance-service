@@ -88,7 +88,12 @@ func checkTime(checkTime time.Time) bool {
 	// Using the original time's location is crucial for correctness.
 	nineAM := time.Date(y, m, d, 9, 0, 0, 0, checkTime.Location())
 
-	return !checkTime.After(nineAM)
+	isBeforeOrEqualNineAM := !checkTime.After(nineAM)
+	weekDayNum := checkTime.Weekday()
+	isWeekday := weekDayNum >= time.Monday && weekDayNum <= time.Friday
+
+	return isBeforeOrEqualNineAM && isWeekday
+
 }
 
 func (ss *AttendanceService) GetSalariesEmployeeByDate(startDate time.Time, endDate time.Time, body dto.Pagination) (dto.ResponseGetMetricSalariesByDate, error) {
@@ -147,7 +152,7 @@ func (ss *AttendanceService) GetSalariesEmployeeByDate(startDate time.Time, endD
 
 	for _, val := range salariesCounter {
 		countSalary := (float32(val.Present) / 22.0) * 10000000.0
-		
+
 		salary := dto.ResponseEntitySalaryData{
 			EmpID:           val.EmpID,
 			Fullname:        val.Fullname,
@@ -167,5 +172,38 @@ func (ss *AttendanceService) GetSalariesEmployeeByDate(startDate time.Time, endD
 	result.Salary = salaryData
 
 	return result, nil
+}
+func (as *AttendanceService) GetAttendanceListByDateRange(startDate time.Time, endDate time.Time, body dto.Pagination) (dto.ResponseGetAllAttendance, error) {
+	var result dto.ResponseGetAllAttendance
+	result.Limit = body.Limit
+	result.Page = body.Page
 
+	attendances, err := as.Repositories.AttendanceRepository.GetAttendanceByDateRange(startDate, endDate, body.Page, body.Limit)
+	if err != nil {
+		return result, err
+	}
+
+	getTotal, err := as.Repositories.AttendanceRepository.GetTotalAttendanceByDate(startDate, endDate)
+	if err != nil {
+		return result, err
+	}
+
+	for _, attendance := range attendances {
+		result.Attendance = append(result.Attendance, entities.Attendance{
+			ID:         attendance.ID,
+			EmployeeID: attendance.EmployeeID,
+			Employee: entities.Employees{
+				EmpID:    attendance.Employee.EmpID,
+				Fullname: attendance.Employee.Fullname,
+			},
+			ClockIn:   attendance.ClockIn,
+			CreatedAt: attendance.CreatedAt,
+			UpdatedAt: attendance.UpdatedAt,
+		})
+	}
+
+	result.Total = getTotal
+	result.TotalPage = math.Ceil(float64(getTotal) / float64(body.Limit))
+
+	return result, nil
 }

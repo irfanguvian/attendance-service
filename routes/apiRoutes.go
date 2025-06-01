@@ -23,6 +23,7 @@ func SetupRoutes(router *gin.Engine, controllers *controllers.Controllers, middl
 	attendanceRoutes := router.Group("/attendance")
 	attendanceRoutes.POST("/create", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.CreateAttendance)
 	attendanceRoutes.GET("/list-today", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.GetAttendanceList)
+	attendanceRoutes.GET("/list-by-date-range", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.GetAttendanceListByDateRange)
 	attendanceRoutes.GET("/salaries", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.ListEmployeeSalaries)
 
 }
