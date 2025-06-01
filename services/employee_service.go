@@ -117,27 +117,3 @@ func (es *EmployeeService) GetAllEmployees(body dto.Pagination) (dto.ResponseGet
 
 	return result, nil
 }
-
-func (es *EmployeeService) ListEmployeeSalaries(body dto.PaginationEmployeeSalary) ([]dto.ResponseEntitySalaryData, error) {
-	employees, err := es.Repositories.EmployeeRepository.GetAllEmployees(body.Page, body.Limit)
-	if err != nil {
-		return nil, err
-	}
-
-	var response []dto.ResponseEntitySalaryData
-	for _, emp := range employees {
-		salary := dto.ResponseEntitySalaryData{
-			Employees: entities.Employees{
-				ID:        emp.ID,
-				EmpID:     emp.EmpID,
-				Fullname:  emp.Fullname,
-				CreatedAt: emp.CreatedAt,
-				UpdatedAt: emp.UpdatedAt,
-			},
-			Salary: 0, // Placeholder for salary logic
-		}
-		response = append(response, salary)
-	}
-
-	return response, nil
-}

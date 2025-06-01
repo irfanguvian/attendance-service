@@ -117,7 +117,6 @@ func (ec *EmployeeController) GetAllEmployees(c *gin.Context) {
 		pagination.Limit = int8(limitUint)
 	}
 
-
 	if pagination.Page <= 0 {
 		pagination.Page = 1
 	}
@@ -131,49 +130,4 @@ func (ec *EmployeeController) GetAllEmployees(c *gin.Context) {
 		return
 	}
 	utils.SuccessResponse(c, 200, "Employees retrieved successfully", employees)
-}
-
-func (ec *EmployeeController) ListEmployeeSalaries(c *gin.Context) {
-	var pagination dto.PaginationEmployeeSalary
-
-	if _, ok := c.GetQuery("page"); ok {
-		page, err := strconv.Atoi(c.Query("page"))
-		if err != nil {
-			utils.ErrorResponse(c, 400, "Invalid page number")
-			return
-		}
-		pageUint := page
-		pagination.Page = int8(pageUint)
-	}
-
-	if _, ok := c.GetQuery("limit"); ok {
-		limit, err := strconv.Atoi(c.Query("limit"))
-		if err != nil {
-			utils.ErrorResponse(c, 400, "Invalid limit number")
-			return
-		}
-		limitUint := limit
-		pagination.Limit = int8(limitUint)
-	}
-
-	if _, ok := c.GetQuery("date_filter"); ok {
-		pagination.DateFilter = c.Query("date_filter")
-	} else {
-		utils.ErrorResponse(c, 400, "Date filter is required")
-		return
-	}
-
-	if pagination.Page <= 0 {
-		pagination.Page = 1
-	}
-	if pagination.Limit <= 0 {
-		pagination.Limit = 10
-	}
-
-	salaries, err := ec.EmployeeService.ListEmployeeSalaries(pagination)
-	if err != nil {
-		utils.ErrorResponse(c, 500, err.Error())
-		return
-	}
-	utils.SuccessResponse(c, 200, "Employee salaries retrieved successfully", salaries)
 }

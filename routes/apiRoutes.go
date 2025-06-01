@@ -19,9 +19,10 @@ func SetupRoutes(router *gin.Engine, controllers *controllers.Controllers, middl
 	employeeRoutes.DELETE("/:employeeID", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.EmployeeController.DeleteEmployee)
 	employeeRoutes.GET("/:employeeID", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.EmployeeController.GetEmployeeByID)
 	employeeRoutes.GET("/list", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.EmployeeController.GetAllEmployees)
-	employeeRoutes.GET("/salaries", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.EmployeeController.ListEmployeeSalaries)
 
 	attendanceRoutes := router.Group("/attendance")
 	attendanceRoutes.POST("/create", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.CreateAttendance)
 	attendanceRoutes.GET("/list-today", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.GetAttendanceList)
+	attendanceRoutes.GET("/salaries", middleware.AuthMiddleware.ProtecHandlerRequest, controllers.AttendanceController.ListEmployeeSalaries)
+
 }

@@ -25,9 +25,6 @@ func main() {
 	if err := config.DB.AutoMigrate(&models.RefreshToken{}); err != nil {
 		log.Fatalf("AutoMigrate RefreshToken failed: %v", err)
 	}
-	if err := config.DB.AutoMigrate(&models.Salary{}); err != nil {
-		log.Fatalf("AutoMigrate Salary failed: %v", err)
-	}
 
 	if err := config.DB.AutoMigrate(&models.Employees{}); err != nil {
 		log.Fatalf("AutoMigrate Employees failed: %v", err)

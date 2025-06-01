@@ -1,6 +1,8 @@
 package interfaces
 
 import (
+	"time"
+
 	"github.com/irfanguvian/attendance-service/models"
 )
 
@@ -28,6 +30,7 @@ type EmployeeRepository interface {
 	UpdateEmployee(employee *models.Employees) error
 	DeleteEmployee(employeeID uint) error
 	GetEmployeeByID(employeeID uint) (*models.Employees, error)
+	GetEmployeeByEmpID(empID string) (*models.Employees, error)
 	GetAllEmployees(page int8, limit int8) ([]models.Employees, error)
 
 	GetTotalEmployees() (int64, error)
@@ -37,6 +40,8 @@ type EmployeeRepository interface {
 type AttendanceRepository interface {
 	CreateAttendance(attendance *models.Attendance) error
 	GetAttendanceListToday(page int8, limit int8) ([]models.Attendance, error)
+	GetAttendanceByDate(startDate time.Time, endDate time.Time, page int8, limit int8) ([]models.Attendance, error)
+	GetTotalAttendanceByDate(startDate time.Time, endDate time.Time) (int64, error)
 	GetTotalAttendanceToday() (int64, error)
 	IsUserAttendToday(employeeID uint) (bool, error)
 }

@@ -7,11 +7,23 @@ import (
 )
 
 type CreateAttendanceBody struct {
-	EmployeeID uint      `json:"employee_id" binding:"required"`
-	ClockIn    time.Time `json:"clock_in" binding:"required"` 
+	EmpID   string    `json:"emp_id" binding:"required"`
+	ClockIn time.Time `json:"clock_in" binding:"required"`
 }
 
 type ResponseGetAllAttendance struct {
 	Attendance []entities.Attendance `json:"attendance"`
+	PaginationResponse
+}
+
+type SalaryCounterObject struct {
+	Absent  int8
+	Present int8
+	EmpID  string
+	Fullname string
+}
+
+type ResponseGetMetricSalariesByDate struct {
+	Salary []ResponseEntitySalaryData `json:"salary"`
 	PaginationResponse
 }

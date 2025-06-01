@@ -74,3 +74,12 @@ func (er *EmployeeRepositories) GetLatestEmployeeID() (int64, error) {
 	}
 	return int64(latestEmployee.ID), nil
 }
+
+
+func (er *EmployeeRepositories) GetEmployeeByEmpID(empID string) (*models.Employees, error) {
+	employee := &models.Employees{}
+	if err := er.DB.Where("emp_id = ? AND deleted_at IS NULL", empID).First(employee).Error; err != nil {
+		return nil, err
+	}
+	return employee, nil
+}
