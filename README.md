@@ -2,6 +2,7 @@
 
 This is a backend API service for managing employee attendance, built with Go. It features a clean architecture design and uses JWT for authentication with access and refresh tokens.
 
+[Support Document](https://drive.google.com/drive/folders/1J40bL8j0v5i2MKNgyxQRNHG-n_-YxGQP?usp=sharing)
 ## Table of Contents
 
 - [Features](#features)
@@ -170,6 +171,7 @@ make run-migration
 This executes the `migrate/migrate.go` file, which uses GORM's `AutoMigrate` feature to create or update tables based on the defined models.
 
 ## API Endpoints
+[Postman Live Version](https://documenter.getpostman.com/view/14873468/2sB2qgeyDf)
 
 **Auth Routes (`/auth`)**
 -   `POST /login`: User login.
@@ -217,7 +219,3 @@ This executes the `migrate/migrate.go` file, which uses GORM's `AutoMigrate` fea
 
 -   `make serve`: Runs the application with live reload using CompileDaemon.
 -   `make run-migration`: Executes the database migrations.
-
----
-
-This README provides a comprehensive overview of the Attendance Service API.
