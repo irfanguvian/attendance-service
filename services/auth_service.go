@@ -40,7 +40,7 @@ func (as *AuthService) ValidateToken(tokenString string) (jwt.MapClaims, error) 
 func (as *AuthService) createToken(args jwt.MapClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, args)
 
-	tokenString, err := token.SignedString(as.AppConfig.JWTSecretKey)
+	tokenString, err := token.SignedString([]byte(as.AppConfig.JWTSecretKey))
 	if err != nil {
 		return "", err
 	}
