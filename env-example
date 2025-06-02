@@ -1,0 +1,3 @@
+DATA_BASE_URL = "host=localhost user=postgres password='' dbname=attendance-service port=5432 TimeZone=UTC"
+PORT = 3000
+JWT_SECRET_KEY="verysecretkey"
