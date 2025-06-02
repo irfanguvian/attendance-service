@@ -54,7 +54,6 @@ func LoadConfig() {
 		}
 
 	} else {
-		// dev is getting env from .env
 		if port, err := strconv.Atoi(os.Getenv("PORT")); err == nil && port > 0 {
 			AppConfig.ServerPort = port
 		}

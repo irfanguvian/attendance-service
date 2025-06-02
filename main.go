@@ -1,7 +1,8 @@
 package main
 
 import (
-	"strconv"
+	"fmt"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/irfanguvian/attendance-service/config"
@@ -67,10 +68,13 @@ func main() {
 
 	routes.SetupRoutes(router, controllers, middlewareHandler)
 
-	port := config.AppConfig.ServerPort
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = fmt.Sprintf("%d", config.AppConfig.ServerPort) // Use default port if not set
+	}
 
-	logger.Info("Server starting on port %d", port)
-	if err := router.Run(":" + strconv.Itoa(port)); err != nil {
+	logger.Info("Server starting on port %s", port)
+	if err := router.Run(":" + port); err != nil {
 		logger.Error("Failed to start server: %v", err)
 		return
 	}
