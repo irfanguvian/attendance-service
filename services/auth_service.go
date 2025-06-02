@@ -15,7 +15,7 @@ import (
 
 type AuthService struct {
 	Repositories interfaces.Repositories
-	AppConfig config.Config
+	AppConfig    config.Config
 }
 
 func NewAuthService(repo interfaces.Repositories, appConfig config.Config) interfaces.AuthService {
@@ -27,7 +27,7 @@ func NewAuthService(repo interfaces.Repositories, appConfig config.Config) inter
 
 func (as *AuthService) ValidateToken(tokenString string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
+		return []byte(as.AppConfig.JWTSecretKey), nil
 	})
 
 	if err != nil {
@@ -37,10 +37,10 @@ func (as *AuthService) ValidateToken(tokenString string) (jwt.MapClaims, error) 
 	return token.Claims.(jwt.MapClaims), nil
 }
 
-func CreateToken(args jwt.MapClaims) (string, error) {
+func (as *AuthService) createToken(args jwt.MapClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, args)
 
-	tokenString, err := token.SignedString([]byte("secret"))
+	tokenString, err := token.SignedString(as.AppConfig.JWTSecretKey)
 	if err != nil {
 		return "", err
 	}
@@ -102,15 +102,15 @@ func (as *AuthService) Login(loginBody dto.LoginBody) (*dto.ResponseLoginService
 	claimsRefreshToken := jwt.MapClaims{
 		"access_id":  accessTokenID,
 		"refresh_id": refreshTokenID,
-		"exp":        jwt.TimeFunc().Add(as.AppConfig.RefreshTokenDuration).Unix(), 
+		"exp":        jwt.TimeFunc().Add(as.AppConfig.RefreshTokenDuration).Unix(),
 	}
 
-	token, err := CreateToken(claims)
+	token, err := as.createToken(claims)
 	if err != nil {
 		return nil, err
 	}
 
-	tokenRefresh, err := CreateToken(claimsRefreshToken)
+	tokenRefresh, err := as.createToken(claimsRefreshToken)
 	if err != nil {
 		return nil, err
 	}
@@ -173,12 +173,12 @@ func (as *AuthService) ExchangeToken(refreshToken string) (*dto.ResponseLoginSer
 		"refresh_id": newRefreshID,
 	}
 
-	newAccessToken, err := CreateToken(newClaims)
+	newAccessToken, err := as.createToken(newClaims)
 	if err != nil {
 		return nil, err
 	}
 
-	newRefreshToken, err := CreateToken(newClaimsRefresh)
+	newRefreshToken, err := as.createToken(newClaimsRefresh)
 	if err != nil {
 		return nil, err
 	}
