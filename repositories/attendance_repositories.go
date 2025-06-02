@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/irfanguvian/attendance-service/models"
@@ -27,7 +28,7 @@ func (ar *AttendanceRepositories) CreateAttendance(attendance *models.Attendance
 func (ar *AttendanceRepositories) GetAttendanceListToday(page int8, limit int8) ([]models.Attendance, error) {
 	var attendances []models.Attendance
 	offset := (page - 1) * limit
-	if err := ar.DB.Joins("Employee").Where("attendances.clock_in >= CURRENT_DATE").Order("id desc").Offset(int(offset)).Limit(int(limit)).Find(&attendances).Error; err != nil {
+	if err := ar.DB.Joins("Employee").Where("attendances.created_at >= CURRENT_DATE").Order("id desc").Offset(int(offset)).Limit(int(limit)).Find(&attendances).Error; err != nil {
 		return nil, err
 	}
 	return attendances, nil
@@ -35,16 +36,16 @@ func (ar *AttendanceRepositories) GetAttendanceListToday(page int8, limit int8) 
 
 func (ar *AttendanceRepositories) GetTotalAttendanceToday() (int64, error) {
 	var count int64
-	if err := ar.DB.Model(&models.Attendance{}).Where("clock_in >= CURRENT_DATE").Count(&count).Error; err != nil {
+	if err := ar.DB.Model(&models.Attendance{}).Where("created_at >= CURRENT_DATE").Count(&count).Error; err != nil {
 		return 0, err
 	}
 	return count, nil
 }
 
-func (ar *AttendanceRepositories) IsUserAttendToday(employeeID uint) (bool, error) {
+func (ar *AttendanceRepositories) IsUserAttendToday(employeeID uint, clockIn string) (bool, error) {
 	var count int64
 	if err := ar.DB.Model(&models.Attendance{}).
-		Where("employee_id = ? AND clock_in >= CURRENT_DATE", employeeID).
+		Where("employee_id = ? AND clock_in BETWEEN ? AND ?", employeeID, fmt.Sprintf("%s 00:00:00", clockIn), fmt.Sprintf("%s 23:59:59", clockIn)).
 		Count(&count).Error; err != nil {
 		return false, err
 	}

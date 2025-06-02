@@ -29,8 +29,9 @@ func (as *AttendanceService) CreateAttendance(attendance dto.CreateAttendanceBod
 	if err != nil {
 		return err
 	}
-
-	checkAttend, err := as.Repositories.AttendanceRepository.IsUserAttendToday(employee.ID)
+	getDateFromClockIn := attendance.ClockIn.Format("2006-01-02")
+	fmt.Println("getDateFromClockIn", getDateFromClockIn)
+	checkAttend, err := as.Repositories.AttendanceRepository.IsUserAttendToday(employee.ID, getDateFromClockIn)
 	if err != nil {
 		return err
 	}
