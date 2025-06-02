@@ -2,6 +2,7 @@
 .env-docker
 env
 ./attendance-service
+attendance-service
 key_development.json
 images/*
 mocks/*

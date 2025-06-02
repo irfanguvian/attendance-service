@@ -30,7 +30,7 @@ func setupRepositories() interfaces.Repositories {
 
 func setupServices(repositories interfaces.Repositories) interfaces.Services {
 	return interfaces.Services{
-		AuthService:       services.NewAuthService(repositories),
+		AuthService:       services.NewAuthService(repositories, config.AppConfig),
 		EmployeeService:   services.NewEmployeeService(repositories),
 		AttendanceService: services.NewAttendanceService(repositories),
 	}

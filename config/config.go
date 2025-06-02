@@ -13,13 +13,9 @@ type Config struct {
 	AppName              string
 	ServerPort           int
 	DatabaseURL          string
-	GeminiAPIKey         string
-	GcpKeyPath           string
 	JWTSecretKey         string
 	AccessTokenDuration  time.Duration
 	RefreshTokenDuration time.Duration
-	Environment          string
-	RouterMockURL        string
 }
 
 var AppConfig Config
@@ -35,11 +31,10 @@ func LoadConfig() {
 
 	// Set defaults
 	AppConfig = Config{
-		AppName:              "GasPost",
+		AppName:              "Attendance System",
 		ServerPort:           3000,
-		AccessTokenDuration:  24 * time.Hour,
-		RefreshTokenDuration: 48 * time.Hour,
-		Environment:          "development",
+		AccessTokenDuration:  10 * time.Minute,
+		RefreshTokenDuration: 1 * time.Hour,
 	}
 
 	if isUsingProduction {
@@ -58,9 +53,6 @@ func LoadConfig() {
 			log.Println("Warning: Using default JWT secret key. This should be set in production.")
 		}
 
-		if env := os.Getenv("APP_ENV"); env != "" {
-			AppConfig.Environment = env
-		}
 	} else {
 		// dev is getting env from .env
 		if port, err := strconv.Atoi(os.Getenv("PORT")); err == nil && port > 0 {
@@ -78,8 +70,5 @@ func LoadConfig() {
 			log.Println("Warning: Using default JWT secret key. This should be set in production.")
 		}
 
-		if env := env["APP_ENV"]; env != "" {
-			AppConfig.Environment = env
-		}
 	}
 }

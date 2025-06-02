@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
+	"github.com/irfanguvian/attendance-service/config"
 	"github.com/irfanguvian/attendance-service/dto"
 	"github.com/irfanguvian/attendance-service/entities"
 	"github.com/irfanguvian/attendance-service/interfaces"
@@ -14,11 +15,13 @@ import (
 
 type AuthService struct {
 	Repositories interfaces.Repositories
+	AppConfig config.Config
 }
 
-func NewAuthService(repo interfaces.Repositories) interfaces.AuthService {
+func NewAuthService(repo interfaces.Repositories, appConfig config.Config) interfaces.AuthService {
 	return &AuthService{
 		Repositories: repo,
+		AppConfig:    appConfig,
 	}
 }
 
@@ -93,13 +96,13 @@ func (as *AuthService) Login(loginBody dto.LoginBody) (*dto.ResponseLoginService
 
 	claims := jwt.MapClaims{
 		"access_id": accessTokenID,
-		// "exp":       jwt.TimeFunc().Add(1 * time.Minute).Unix(), // Set expiration time to 24 hours
+		"exp":       jwt.TimeFunc().Add(as.AppConfig.AccessTokenDuration).Unix(),
 	}
 
 	claimsRefreshToken := jwt.MapClaims{
 		"access_id":  accessTokenID,
 		"refresh_id": refreshTokenID,
-		// "exp":        jwt.TimeFunc().Add(10 * time.Hour).Unix(), // Set expiration time to 24 hours
+		"exp":        jwt.TimeFunc().Add(as.AppConfig.RefreshTokenDuration).Unix(), 
 	}
 
 	token, err := CreateToken(claims)
